@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any
 
 from fastapi import FastAPI, File, UploadFile
 
@@ -11,7 +11,7 @@ async def create_file(file: Annotated[bytes, File()]) -> dict[str, int]:
 
 
 @app.post("/uploadfile/")
-async def create_upload_file(uploaded_file: UploadFile):
+async def create_upload_file(uploaded_file: UploadFile) -> dict[str, Any]:
     payload: bytes = await uploaded_file.read()
     with open(uploaded_file.filename, "wb") as file:
         file.write(payload)

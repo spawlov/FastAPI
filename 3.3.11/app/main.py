@@ -1,4 +1,3 @@
-from ast import pattern
 import re
 from fastapi import FastAPI, HTTPException, Request
 

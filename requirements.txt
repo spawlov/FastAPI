@@ -1,1 +1,4 @@
-fastapi==0.111.0p
+fastapi==0.111.0
+pyjwt==2.9.0
+bcrypt==4.2.0
+cryptography==43.0.0

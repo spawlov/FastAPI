@@ -65,4 +65,4 @@ async def about_me(current_user: str = Depends(get_user_from_token)) -> dict[str
     user: dict[str, str] | None = get_user(current_user)
     if user:
         return user
-    raise HTTPException(status_code=404, detail=f"User {current_user} not fount")
+    raise HTTPException(status_code=404, detail=f"User {current_user} not found")

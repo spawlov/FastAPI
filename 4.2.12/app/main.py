@@ -118,7 +118,7 @@ async def login(user_in: User) -> dict[str, str]:
 
 
 @app.get("/protected_resource")
-async def procected_resource(token: str = Depends(oauth2_scheme)) -> dict[str, str]:
+async def protected_resource(token: str = Depends(oauth2_scheme)) -> dict[str, str]:
     try:
         payload: dict = jwt.decode(
             token, os.getenv("SECRET_KEY"), algorithms=os.getenv("ALGORITHM")

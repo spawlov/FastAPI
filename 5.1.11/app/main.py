@@ -4,7 +4,7 @@ from dotenv import find_dotenv, load_dotenv
 from fastapi import Body, FastAPI, HTTPException, Path
 from pydantic import BaseModel
 from sqlalchemy import Delete, Select, delete, insert, select
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import (
     Mapped,
     declarative_base,
@@ -19,7 +19,7 @@ ASYNC_DB_URL: str = os.getenv("ASYNC_DB_URL")
 
 engine: AsyncEngine = create_async_engine(ASYNC_DB_URL, echo=True)
 Base: Any = declarative_base()
-async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+async_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
 
 class Todo(Base):

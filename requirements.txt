@@ -6,3 +6,4 @@ asyncpg==0.29.0
 SQLAlchemy==2.0.32
 databases==0.9.0
 alembic==1.13.2
+psycopg2-binary==2.9.9

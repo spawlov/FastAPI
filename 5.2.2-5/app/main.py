@@ -80,7 +80,7 @@ async def update_user(user_id: int, user: UserCreate) -> dict[str, Any]:
 
 
 @app.delete("/user/{user_id}", response_model=dict)
-async def delete_user(user_id: int):
+async def delete_user(user_id: int) -> dict[str, str]:
     query = "DELETE FROM users WHERE id = :user_id RETURNING id"
     values: dict[str, int] = {"user_id": user_id}
     try:

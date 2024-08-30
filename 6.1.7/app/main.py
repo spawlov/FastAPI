@@ -14,17 +14,26 @@ class CustomException(HTTPException):
 async def custom_exception_handler(
     request: Request, exc: CustomException
 ) -> JSONResponse:
-    return JSONResponse(status_code=exc.status_code, content={"error": exc.detail})
+    return JSONResponse(
+        status_code=exc.status_code, content={"error": exc.detail, "args": exc.args}
+    )
 
 
 @app.exception_handler(Exception)
 async def global_exception_handler(reuest: Request, exc: Exception) -> JSONResponse:
-    return JSONResponse(status_code=500, content={"error": "Internal server error"})
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Internal server error",
+            "args": exc.args,
+        },
+    )
 
 
 @app.get("/items/{item_id}/")
 async def read_item(item_id: int) -> dict[str, int]:
     if item_id == 42:
         raise CustomException(status_code=404, detail="Item not found")
-    result = 1 / 0
+    if item_id > 42:
+        result = item_id["cghbnj"]
     return {"item_id": item_id}

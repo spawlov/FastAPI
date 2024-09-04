@@ -13,7 +13,6 @@ engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-
 class UserInDB(Base):
     __tablename__ = "users"
 
@@ -29,10 +28,11 @@ class User(BaseModel):
     username: str
     email: EmailStr
 
+
 class UserResponse(BaseModel):
-    id:int
-    username:str
-    email:EmailStr
+    id: int
+    username: str
+    email: EmailStr
 
 
 @asynccontextmanager
@@ -41,8 +41,10 @@ async def lifespan(app: FastAPI):
     yield
     await database.disconnect()
 
+
 app = FastAPI(lifespan=lifespan)
 database = Database(DATABASE_URL)
+
 
 @app.post("/register", response_model=User)
 async def register_user(user: User) -> User:
@@ -50,10 +52,11 @@ async def register_user(user: User) -> User:
     db_user = await database.fetch_one(query)
     if db_user:
         raise HTTPException(status_code=400, detail="User already registered")
-    
+
     query = UserInDB.__table__.insert().values(username=user.username, email=user.email)
     await database.execute(query)
     return user
+
 
 @app.get("/user/{username}", response_model=UserResponse)
 async def get_user(username: str):
@@ -63,13 +66,14 @@ async def get_user(username: str):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+
 @app.delete("/user/{username}", response_model=dict)
 async def delete_user(username: str):
     query = UserInDB.__table__.select().where(UserInDB.username == username)
     user = await database.fetch_one(query)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
     query = UserInDB.__table__.delete().where(UserInDB.username == username)
     await database.execute(query)
     return {"detail": "User deleted"}

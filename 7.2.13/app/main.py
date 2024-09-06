@@ -33,9 +33,15 @@ async def read_item(item_id: int) -> Any:
 @app.get("/api/places/")
 async def get_places() -> Any:
     async with httpx.AsyncClient() as client:
-        response: httpx.Response = await client.get(
-            "https://map.s-pavlov.ru/api/places/"
-        )
+        try:
+            response: httpx.Response = await client.get(
+                "https://map.s-pavlov.ru/api/places/"
+            )
+        except (
+            httpx.TimeoutException,
+            httpx.ConnectError,
+        ) as error:
+            raise HTTPException(status_code=408, detail=str(error))
         response.raise_for_status()
         return response.json()
 
@@ -45,9 +51,15 @@ async def get_place(id: int) -> Any:
     if id < 0:
         raise HTTPException(status_code=400, detail="Id mast be positive or 0")
     async with httpx.AsyncClient() as client:
-        response: httpx.Response = await client.get(
-            "https://map.s-pavlov.ru/api/places/"
-        )
+        try:
+            response: httpx.Response = await client.get(
+                "https://map.s-pavlov.ru/api/places/"
+            )
+        except (
+        httpx.TimeoutException,
+        httpx.ConnectError,
+        ) as error:
+            raise HTTPException(status_code=408, detail=str(error))
         response.raise_for_status()
         try:
             result: dict = response.json()[id]

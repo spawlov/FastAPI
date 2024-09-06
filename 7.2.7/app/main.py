@@ -9,7 +9,7 @@ EXTERNAL_API_URL = "https://catfact.ninja/fact"
 
 
 # функция для получения данных из внешнего API
-def fetch_data_from_api() -> Any | None:
+def fetch_data_from_api():
     response = requests.get(EXTERNAL_API_URL)
     if response.status_code == 200:
         return response.json()
@@ -20,9 +20,9 @@ def fetch_data_from_api() -> Any | None:
 # функция для обработки данных
 def process_data(data) -> dict:
     # как-то логика обработки данных
-    new_data: dict = {}
+    new_data: dict[str, Any] = {}
     for key, value in data.items():
-        new_data[key.upper()] = value.upper()
+        new_data[key.upper()] = value.upper() if isinstance(value, str) else value
     return new_data
 
 

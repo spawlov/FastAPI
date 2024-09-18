@@ -37,7 +37,7 @@ def test_get_user_by_id(client) -> None:
     user_data: dict[str, str] = {"name": "User", "email": "user@example.com"}
     response: Any = client.post("/create_user/", json=user_data)
     assert response.status_code == 201
-    response: Any = client.get("/user/1")
+    response: Any = client.get(f"/user/{UserResponse(**response.json()).id}")
     user_response: Any = UserResponse(**response.json())
     assert response.status_code == 200
     assert user_response.id == 1
@@ -59,9 +59,11 @@ def test_update_user(client) -> None:
         "name": "Updated",
         "email": "updated@example.com",
     }
-    response: Any = client.put("/update_user/1", json=user_update_data)
-    user_response: Any = UserResponse(**response.json())
-    assert response.status_code == 200
+    update_response: Any = client.put(
+        f"/update_user/{UserResponse(**response.json()).id}", json=user_update_data
+    )
+    user_response: Any = UserResponse(**update_response.json())
+    assert update_response.status_code == 200
     assert user_response.id == 1
     assert user_response.name == user_update_data["name"]
     assert user_response.email == user_update_data["email"]
@@ -78,12 +80,14 @@ def test_delete_user(client) -> None:
     user_data: dict[str, str] = {"name": "User", "email": "user@example.com"}
     response: Any = client.post("/create_user/", json=user_data)
     assert response.status_code == 201
-    response: Any = client.delete("/delete_user/1")
-    assert response.status_code == 200
-    assert response.json()["detail"] == "User id=1 deleted"
+    del_response: Any = client.delete(
+        f"/delete_user/{UserResponse(**response.json()).id}"
+    )
+    assert del_response.status_code == 200
+    assert del_response.json()["detail"] == "User id=1 deleted"
 
 
 def test_delete_not_exists_user(client) -> None:
-    response: Any = client.delete("/delete_user/1")
+    response: Any = client.delete("/delete_user/999")
     assert response.status_code == 404
     assert response.json()["detail"] == "User not found"
